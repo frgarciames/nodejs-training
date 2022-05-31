@@ -1,17 +1,6 @@
 version: '3.4'
 
 services:
-  nodejstraining:
-    image: nodejstraining
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    environment:
-      NODE_ENV: production
-    depends_on:
-      - postgres
-    ports:
-      - 3000:3000
   postgres:
     image: postgres
     environment:
