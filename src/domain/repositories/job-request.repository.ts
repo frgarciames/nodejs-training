@@ -1,4 +1,4 @@
 import { JobRequest } from '../entities'
-import { GenericRepository } from './generic'
+import { Repository } from './generic'
 
-export interface JobRequestRepository extends GenericRepository<JobRequest> {}
+export interface JobRequestRepository extends Repository<JobRequest> {}

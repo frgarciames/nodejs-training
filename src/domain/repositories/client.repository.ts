@@ -1,4 +1,4 @@
 import { Client } from '../entities'
-import { GenericRepository } from './generic'
+import { Repository } from './generic'
 
-export interface UserRepository extends GenericRepository<Client> {}
+export interface ClientRepository extends Repository<Client> {}

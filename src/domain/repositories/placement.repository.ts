@@ -1,4 +1,4 @@
 import { Placement } from '../entities'
-import { GenericRepository } from './generic'
+import { Repository } from './generic'
 
-export interface PlacementRepository extends GenericRepository<Placement> {}
+export interface PlacementRepository extends Repository<Placement> {}

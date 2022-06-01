@@ -22,3 +22,5 @@ export const AppDataSource = new DataSource({
   subscribers: [],
   dropSchema: true,
 })
+
+export const { manager: entityManager } = AppDataSource
