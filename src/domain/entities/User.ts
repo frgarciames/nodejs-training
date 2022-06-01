@@ -1,5 +1,6 @@
 import { UUID } from '../shared'
 import { Candidacy } from './Candidacy'
+import { Placement } from './Placement'
 
 export interface User {
   id: UUID
@@ -8,4 +9,5 @@ export interface User {
   email: string
   country: string
   candidacies: Candidacy[]
+  placements: Placement[]
 }

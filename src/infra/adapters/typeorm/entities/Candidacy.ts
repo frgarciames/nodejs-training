@@ -1,5 +1,15 @@
-import { Candidacy, JobRequest, User } from '@/domain/entities'
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Candidacy, JobRequest, Placement, User } from '@/domain/entities'
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm'
+import { JobRequestAdapter } from './JobRequest'
+import { PlacementAdapter } from './Placement'
 import { UserAdapter } from './User'
 
 @Entity({ name: 'Candidacies' })
@@ -10,8 +20,13 @@ export class CandidacyAdapter implements Candidacy {
   @Column()
   status: string
 
-  @ManyToMany(() => UserAdapter, (user) => user.candidacies)
+  @ManyToOne(() => UserAdapter, (user) => user.candidacies)
   user: User
 
+  @OneToOne(() => JobRequestAdapter)
+  @JoinColumn()
   jobRequest: JobRequest
+
+  @OneToOne(() => PlacementAdapter)
+  placement: Placement
 }

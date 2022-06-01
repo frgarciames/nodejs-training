@@ -1,6 +1,7 @@
-import { Candidacy, User } from '@/domain/entities'
+import { Candidacy, Placement, User } from '@/domain/entities'
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { CandidacyAdapter } from './Candidacy'
+import { PlacementAdapter } from './Placement'
 
 @Entity({ name: 'Users' })
 export class UserAdapter implements User {
@@ -19,6 +20,9 @@ export class UserAdapter implements User {
   @Column()
   availability: string
 
-  @OneToMany(() => CandidacyAdapter, (candidacy) => candidacy.user, {})
+  @OneToMany(() => CandidacyAdapter, (candidacy) => candidacy.user, { cascade: true })
   candidacies: Candidacy[]
+
+  @OneToMany(() => PlacementAdapter, (placement) => placement.user, { cascade: true })
+  placements: Placement[]
 }

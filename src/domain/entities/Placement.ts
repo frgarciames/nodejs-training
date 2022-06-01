@@ -5,7 +5,7 @@ import { User } from './User'
 
 export interface Placement {
   id: UUID
-  user: User
+  user?: User
   client: Client
   candidacy: Candidacy
 }
