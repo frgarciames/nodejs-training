@@ -20,4 +20,5 @@ export const AppDataSource = new DataSource({
   entities: [CandidacyAdapter, UserAdapter, ClientAdapter, JobRequestAdapter, PlacementAdapter],
   migrations: [],
   subscribers: [],
+  dropSchema: true,
 })

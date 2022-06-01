@@ -5,50 +5,61 @@ import { UserAdapter } from './entities/User'
 
 // USER CREATES CANDIDACY => CANDIDACY TRANSFORMS TO JOBREQUEST => JOBREQUEST IS RECEIVED BY CLIENT => CLIENT CREATES PLACEMENT FROM CANDIDACY
 
-export const initDB = () => {
-  AppDataSource.initialize()
-    .then(async () => {
-      //   console.log('Clearing database ...')
-      //   await AppDataSource.dropDatabase()
-      console.log('Inserting a new user into the database...')
-      const user = new UserAdapter()
-      user.name = 'Timber'
-      user.email = 't@adsf.com'
-      user.availability = 'Full-time'
-      user.country = 'Brazil'
-      user.candidacies = []
-      user.placements = []
+export const initDB = async () => {
+  try {
+    await AppDataSource.initialize()
+    if (process.env.NODE_ENV === 'development') {
+      await seedData()
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
 
-      const candidacy = new CandidacyAdapter()
-      candidacy.status = 'full'
+const seedData = async () => {
+  console.log('Inserting a new user into the database...')
+  const user = new UserAdapter()
+  user.name = 'Timber'
+  user.email = 't@adsf.com'
+  user.availability = 'Full-time'
+  user.country = 'Brazil'
+  user.candidacies = []
+  user.placements = []
 
-      const client = new ClientAdapter()
-      client.country = 'FR'
-      client.name = 'Client'
-      client.placements = []
-      client.jobRequests = []
+  const candidacy = new CandidacyAdapter()
+  candidacy.status = 'full'
 
-      const jobRequest = new JobRequestAdapter()
-      jobRequest.jobFunction = 'Front-end'
+  const client = new ClientAdapter()
+  client.country = 'FR'
+  client.name = 'Client'
+  client.placements = []
+  client.jobRequests = []
 
-      const placement = new PlacementAdapter()
+  const jobRequest = new JobRequestAdapter()
+  jobRequest.jobFunction = 'Front-end'
 
-      candidacy.jobRequest = jobRequest
-      candidacy.placement = placement
-      user.candidacies.push(candidacy)
-      user.placements.push(placement)
-      client.jobRequests.push(jobRequest)
-      client.placements.push(placement)
+  const placement = new PlacementAdapter()
 
-      await AppDataSource.manager.save(client)
-      await AppDataSource.manager.save(user)
-      console.log('Saved a new user with id: ' + user.id)
+  candidacy.jobRequest = jobRequest
+  candidacy.placement = placement
+  user.candidacies.push(candidacy)
+  user.placements.push(placement)
+  client.jobRequests.push(jobRequest)
+  client.placements.push(placement)
 
-      console.log('Loading users from the database...')
-      const users = await AppDataSource.manager.find(UserAdapter)
-      console.log('Loaded users: ', users)
+  await AppDataSource.manager.save(client)
+  await AppDataSource.manager.save(user)
+  console.log('Saved a new user with id: ' + user.id)
 
-      console.log('Here you can setup and run express / fastify / any other framework.')
-    })
-    .catch((error) => console.log(error))
+  console.log('Loading users from the database...')
+  const users = await AppDataSource.manager.find(UserAdapter)
+  const clients = await AppDataSource.manager.find(ClientAdapter)
+  const jobRequests = await AppDataSource.manager.find(JobRequestAdapter)
+  const candidacies = await AppDataSource.manager.find(CandidacyAdapter)
+  const placements = await AppDataSource.manager.find(PlacementAdapter)
+  console.log('Loaded users: ', users)
+  console.log('Loaded clients: ', clients)
+  console.log('Loaded jobRequests: ', jobRequests)
+  console.log('Loaded candidacies: ', candidacies)
+  console.log('Loaded placements: ', placements)
 }

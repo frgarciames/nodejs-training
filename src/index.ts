@@ -1,10 +1,5 @@
-import * as express from 'express'
-import { initDB } from './infra/adapters/typeorm'
+import { startApplication } from './application'
 
-const app = express()
-
-app.listen(3000, () => {
-  console.log('initiating db')
-  initDB()
-  console.log('listening on port 3000')
-})
+startApplication()
+  .then(() => console.log('Application started'))
+  .catch((err) => console.log(err))
