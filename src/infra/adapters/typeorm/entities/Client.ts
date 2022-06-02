@@ -1,5 +1,14 @@
-import { Client, JobRequest, Placement } from '@/domain/entities'
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Auth, Client, JobRequest, Placement } from '@/domain/entities'
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm'
+import { AuthAdapter } from './Auth'
 import { JobRequestAdapter } from './JobRequest'
 import { PlacementAdapter } from './Placement'
 
@@ -13,6 +22,10 @@ export class ClientAdapter implements Client {
 
   @Column()
   name: string
+
+  @OneToOne(() => AuthAdapter, { cascade: true })
+  @JoinColumn()
+  auth: Auth
 
   @OneToMany(() => JobRequestAdapter, (jobRequest) => jobRequest.client, { cascade: true })
   jobRequests: JobRequest[]

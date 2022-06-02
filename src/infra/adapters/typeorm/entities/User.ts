@@ -1,5 +1,6 @@
-import { Candidacy, Placement, User } from '@/domain/entities'
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Auth, Candidacy, Placement, User } from '@/domain/entities'
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { AuthAdapter } from './Auth'
 import { CandidacyAdapter } from './Candidacy'
 import { PlacementAdapter } from './Placement'
 
@@ -19,6 +20,10 @@ export class UserAdapter implements User {
 
   @Column()
   availability: string
+
+  @OneToOne(() => AuthAdapter, { cascade: true })
+  @JoinColumn()
+  auth: Auth
 
   @OneToMany(() => CandidacyAdapter, (candidacy) => candidacy.user, { cascade: true })
   candidacies: Candidacy[]

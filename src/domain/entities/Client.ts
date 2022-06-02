@@ -1,4 +1,5 @@
 import { UUID } from '../shared'
+import { Auth } from './Auth'
 import { JobRequest } from './JobRequest'
 import { Placement } from './Placement'
 
@@ -8,4 +9,5 @@ export interface Client {
   country: string
   jobRequests: JobRequest[]
   placements: Placement[]
+  auth: Auth
 }
