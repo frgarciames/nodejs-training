@@ -1,17 +1,22 @@
 {
-  "baseUrl": ".",
   "compilerOptions": {
+    "baseUrl": "src",
     "lib": ["es5", "es6"],
-    "target": "es5",
+    "target": "es6",
     "module": "commonjs",
     "moduleResolution": "node",
-    "outDir": "./build",
+    "outDir": "dist",
+    "skipLibCheck": true,
+    "isolatedModules": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/application/*": ["./application/*"],
+      "@/domain/*": ["./domain/*"],
+      "@/infra/*": ["./infra/*"]
     }
   },
-  "include": ["**/*.ts"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }

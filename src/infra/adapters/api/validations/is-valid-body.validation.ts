@@ -1,10 +1,13 @@
-import { Request, Response } from "express"
+import { Request, Response } from 'express'
+import validationException from '../exceptions/validation.exception'
 
-export default function(validateFn: Function) {
+export default function isValidBodyValidation(validateFns: Function[]) {
   return (req: Request, res: Response, next: Function) => {
-    const isValid = validateFn(req.body)
-    if (!isValid) {
-      return res.status(400).send({ error: error.details[0].message })
+    for (const validateFn of validateFns) {
+      const isValid = validateFn(req.body)
+      if (!isValid) {
+        return validationException(res, validateFn.name)
+      }
     }
     next()
   }

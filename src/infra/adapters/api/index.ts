@@ -14,6 +14,7 @@ export const initApi = async () => {
   app.use(compression())
   app.use(bodyParser.json())
   app.use(scopePerRequest(container))
+  app.use(loadControllers('controllers/*.controller.ts', { cwd: __dirname }))
   app.get('/', (req, res) => res.send('API under construction'))
   app.get('/json', (req, res) =>
     res.send({
@@ -30,6 +31,5 @@ export const initApi = async () => {
     )
   })
   app.get('/profile', (req, res) => res.redirect('/json'))
-  app.use(loadControllers('controllers/*.controller.ts', { cwd: __dirname }))
   app.listen(process.env.PORT, () => console.log(`API listening on port ${process.env.PORT}!`))
 }

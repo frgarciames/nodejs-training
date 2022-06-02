@@ -16,9 +16,16 @@ export class UserRepository implements Repository<User> {
   async create(user: Omit<User, 'id'>): Promise<User> {
     return await entityManager.save(UserAdapter, user)
   }
-  async update(user: Partial<User>): Promise<User> {
-    const updatedUser = await entityManager.update(UserAdapter, { id: user.id }, user)
-    return updatedUser[0]
+  async update(partialUser: Partial<User>): Promise<User> {
+    const updateResult = await entityManager.update(
+      UserAdapter,
+      {
+        id: partialUser.id,
+      },
+      partialUser
+    )
+    if (updateResult.affected === 0) return null
+    return await this.findById(partialUser.id)
   }
   async delete(id: UUID): Promise<void> {
     await entityManager.delete(UserAdapter, { id })

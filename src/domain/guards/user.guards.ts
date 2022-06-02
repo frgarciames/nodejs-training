@@ -1,7 +1,8 @@
 import { User } from '../entities'
 
-export function isUser(obj: any): obj is User {
-  if (!obj.availability || !obj.country || !obj.name) {
+export function isUser(entity: any): entity is User {
+  if (!entity.availability || !entity.country || !entity.name) {
     return false
   }
+  return true
 }
