@@ -1,5 +1,5 @@
 import { User } from '@/domain/entities'
-import { Repository } from '@/domain/repositories/generic'
+import { UserRepository } from '@/domain/repositories/user.repository'
 import { UUID } from '@/domain/shared'
 import { FindManyOptions } from 'typeorm'
 import { entityManager } from '../data-source'
@@ -19,7 +19,7 @@ const findOptions: FindManyOptions<UserAdapter> = {
   },
 }
 
-export class UserRepository implements Repository<User> {
+export class TypeOrmUserRepository implements UserRepository {
   async findAll(): Promise<User[]> {
     return await entityManager.find(UserAdapter, findOptions)
   }
@@ -47,5 +47,15 @@ export class UserRepository implements Repository<User> {
   }
   async delete(id: UUID): Promise<void> {
     await entityManager.delete(UserAdapter, { id })
+  }
+  async findByAuthId(authId: UUID): Promise<User> {
+    return await entityManager.findOne(UserAdapter, {
+      where: {
+        auth: {
+          id: authId,
+        },
+      },
+      ...findOptions,
+    })
   }
 }

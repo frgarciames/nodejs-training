@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import { DataSource } from 'typeorm'
+import { DataSource, DataSourceOptions } from 'typeorm'
 import {
   CandidacyAdapter,
   ClientAdapter,
@@ -10,13 +10,13 @@ import {
 import { AuthAdapter } from './entities/Auth'
 import { RoleAdapter } from './entities/Role'
 
-export const AppDataSource = new DataSource({
-  type: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  username: 'postgres',
-  password: 'postgres',
-  database: 'postgres',
+const config: DataSourceOptions = {
+  type: process.env.DB_TYPE as any,
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT),
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   synchronize: true,
   logging: false,
   entities: [
@@ -31,6 +31,8 @@ export const AppDataSource = new DataSource({
   migrations: [],
   subscribers: [],
   dropSchema: true,
-})
+}
+
+export const AppDataSource = new DataSource(config)
 
 export const { manager: entityManager } = AppDataSource

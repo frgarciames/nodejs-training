@@ -1,3 +1,4 @@
+import * as _ from 'lodash'
 import { before, DELETE, GET, PATCH, POST, route } from 'awilix-express'
 import { UserRepository } from '@/domain/repositories/user.repository'
 import areValidParamsValidation from '../validations/are-valid-params.validation'
@@ -5,14 +6,20 @@ import notFoundException from '../exceptions/not-found.exception'
 import isValidBodyValidation from '../validations/is-valid-body.validation'
 import { isUser } from '@/domain/guards/user.guards'
 import isValidBodyParamValidation from '../validations/is-valid-body-param.validation'
-import isValidEmailValidation from '@/domain/validations/is-valid-email.validation'
+import isValidEmail from '@/domain/validations/is-valid-email.validation'
 import { NextFunction, Request, Response } from 'express'
+import { AuthRepository } from '@/domain/repositories/auth.repository'
+import { User } from '@/domain/entities'
+import isEmptyValue from '@/domain/validations/is-empty-value'
+import { verifyToken } from '../middlewares/auth'
 
 @route('/users')
 export default class UsersController {
   private userRepository: UserRepository
-  constructor({ userRepository }) {
+  private authRepository: AuthRepository
+  constructor({ userRepository, authRepository }) {
     this.userRepository = userRepository
+    this.authRepository = authRepository
   }
 
   @GET()
@@ -33,7 +40,7 @@ export default class UsersController {
 
   @route('/:id')
   @PATCH()
-  @before([isValidBodyParamValidation(isValidEmailValidation, ['email'])])
+  @before([isValidBodyParamValidation(isValidEmail, ['email'])])
   async updateUser(req: Request, res: Response, _next: NextFunction) {
     const { id } = req.params
     const updatedUser = await this.userRepository.update({ id, ...req.body })
@@ -44,10 +51,19 @@ export default class UsersController {
   @POST()
   @before([
     isValidBodyValidation([isUser]),
-    isValidBodyParamValidation(isValidEmailValidation, ['email']),
+    isValidBodyParamValidation(isValidEmail, ['email']),
+    verifyToken,
   ])
   async createUser(req: Request, res: Response, _next: NextFunction) {
-    const createdUser = await this.userRepository.create(req.body)
+    console.log(req.headers)
+    return res.send({})
+    const { auth, ...user } = req.body as User
+    // const authInDb = await this.authRepository.findById(auth.id)
+    // if (!authInDb) return notFoundException(res, 'auth')
+    const createdUser = await this.userRepository.create({
+      ...user,
+      auth,
+    })
     if (!createdUser) return notFoundException(res, 'user')
     res.status(201).send(createdUser)
   }

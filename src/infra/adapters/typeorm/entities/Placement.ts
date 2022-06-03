@@ -15,7 +15,7 @@ import { UserAdapter } from './User'
 
 @Entity({ name: 'Placements' })
 export class PlacementAdapter implements Placement {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: UUID
 
   @ManyToOne(() => UserAdapter, (user) => user.placements, { nullable: true })

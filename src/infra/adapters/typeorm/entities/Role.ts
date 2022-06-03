@@ -5,7 +5,7 @@ import { AuthAdapter } from './Auth'
 
 @Entity({ name: 'Roles' })
 export class RoleAdapter implements Role {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: UUID
 
   @Column()

@@ -1,4 +1,5 @@
 import { Auth, Client, JobRequest, Placement } from '@/domain/entities'
+import { UUID } from '@/domain/shared'
 import {
   Column,
   Entity,
@@ -14,8 +15,8 @@ import { PlacementAdapter } from './Placement'
 
 @Entity({ name: 'Clients' })
 export class ClientAdapter implements Client {
-  @PrimaryGeneratedColumn()
-  id: string
+  @PrimaryGeneratedColumn('uuid')
+  id: UUID
 
   @Column()
   country: string
@@ -27,9 +28,13 @@ export class ClientAdapter implements Client {
   @JoinColumn()
   auth: Auth
 
-  @OneToMany(() => JobRequestAdapter, (jobRequest) => jobRequest.client, { cascade: true })
+  @OneToMany(() => JobRequestAdapter, (jobRequest) => jobRequest.client, {
+    cascade: true,
+  })
   jobRequests: JobRequest[]
 
-  @OneToMany(() => PlacementAdapter, (placement) => placement.client, { cascade: true })
+  @OneToMany(() => PlacementAdapter, (placement) => placement.client, {
+    cascade: true,
+  })
   placements: Placement[]
 }

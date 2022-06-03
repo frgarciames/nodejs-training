@@ -1,14 +1,22 @@
 import { Auth, Role } from '@/domain/entities'
 import { UUID } from '@/domain/shared'
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm'
+import {
+  Column,
+  Entity,
+  Index,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm'
 import { RoleAdapter } from './Role'
 
 @Entity({ name: 'Auths' })
 export class AuthAdapter implements Auth {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: UUID
 
   @Column()
+  @Index({ unique: true })
   email: string
 
   @Column()

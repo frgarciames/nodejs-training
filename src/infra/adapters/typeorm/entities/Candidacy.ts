@@ -1,4 +1,5 @@
 import { Candidacy, JobRequest, Placement, User } from '@/domain/entities'
+import { UUID } from '@/domain/shared'
 import {
   Column,
   Entity,
@@ -14,8 +15,8 @@ import { UserAdapter } from './User'
 
 @Entity({ name: 'Candidacies' })
 export class CandidacyAdapter implements Candidacy {
-  @PrimaryGeneratedColumn()
-  id: string
+  @PrimaryGeneratedColumn('uuid')
+  id: UUID
 
   @Column()
   status: string
