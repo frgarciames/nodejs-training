@@ -9,9 +9,11 @@ import isValidBodyParamValidation from '../validations/is-valid-body-param.valid
 import isValidEmail from '@/domain/validations/is-valid-email.validation'
 import { NextFunction, Request, Response } from 'express'
 import { AuthRepository } from '@/domain/repositories/auth.repository'
-import { User } from '@/domain/entities'
+import { Auth, User } from '@/domain/entities'
 import isEmptyValue from '@/domain/validations/is-empty-value'
-import { verifyToken } from '../middlewares/auth'
+import { authenticate } from '../middlewares/auth'
+import alreadyExistException from '../validations/already-exist.validation'
+import unauthorizedException from '../exceptions/unauthorized.exception'
 
 @route('/users')
 export default class UsersController {
@@ -40,10 +42,14 @@ export default class UsersController {
 
   @route('/:id')
   @PATCH()
-  @before([isValidBodyParamValidation(isValidEmail, ['email'])])
+  @before([areValidParamsValidation(['id']), authenticate])
   async updateUser(req: Request, res: Response, _next: NextFunction) {
     const { id } = req.params
-    const updatedUser = await this.userRepository.update({ id, ...req.body })
+    const authInRequest: Auth = (<any>req).auth
+    const userInDb = await this.userRepository.findByAuthId(authInRequest.id)
+    if (!userInDb || userInDb.id !== id) return unauthorizedException(res)
+    const user = req.body as Partial<User>
+    const updatedUser = await this.userRepository.update({ ...user, id })
     if (!updatedUser) return notFoundException(res, 'user')
     res.send(updatedUser)
   }
@@ -52,18 +58,16 @@ export default class UsersController {
   @before([
     isValidBodyValidation([isUser]),
     isValidBodyParamValidation(isValidEmail, ['email']),
-    verifyToken,
+    authenticate,
   ])
   async createUser(req: Request, res: Response, _next: NextFunction) {
-    console.log(req.headers)
-    return res.send({})
-    const { auth, ...user } = req.body as User
-    // const authInDb = await this.authRepository.findById(auth.id)
-    // if (!authInDb) return notFoundException(res, 'auth')
-    const createdUser = await this.userRepository.create({
-      ...user,
-      auth,
-    })
+    const user = req.body as User
+    const authInRequest = (<any>req).auth
+    const auth = await this.authRepository.findById(authInRequest.id)
+    if (!auth) return unauthorizedException(res)
+    const userInDb = await this.userRepository.findByAuthId(auth.id)
+    if (userInDb) return alreadyExistException(res, ['user', 'user'])
+    const createdUser = await this.userRepository.create({ ...user, auth })
     if (!createdUser) return notFoundException(res, 'user')
     res.status(201).send(createdUser)
   }

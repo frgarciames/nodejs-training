@@ -52,10 +52,8 @@ export const seedData = async () => {
   candidacy.placement = placement
 
   authUser.roles = [userRole, userRole2]
-  user.auth = authUser
 
   authClient.roles = [clientRole]
-  client.auth = authClient
 
   user.candidacies = [candidacy]
   user.placements = [placement]
@@ -63,12 +61,21 @@ export const seedData = async () => {
   client.jobRequests = [jobRequest]
   client.placements = [placement]
 
+  const createdClientAuth = await AppDataSource.manager.save(authClient)
+  const createdUserAuth = await AppDataSource.manager.save(authUser)
+  client.auth = createdClientAuth
+  user.auth = createdUserAuth
   await AppDataSource.manager.save(client)
   await AppDataSource.manager.save(user)
+
   console.log('Saved a new user with id: ' + user.id)
 
   console.log('Loading users from the database...')
-  const users = await AppDataSource.manager.find(UserAdapter)
+  const users = await AppDataSource.manager.find(UserAdapter, {
+    relations: {
+      auth: true,
+    },
+  })
   const clients = await AppDataSource.manager.find(ClientAdapter)
   const jobRequests = await AppDataSource.manager.find(JobRequestAdapter)
   const candidacies = await AppDataSource.manager.find(CandidacyAdapter)

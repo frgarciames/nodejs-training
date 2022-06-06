@@ -1,3 +1,4 @@
+import { RequiredField } from '@/application/types'
 import { User } from '@/domain/entities'
 import { UserRepository } from '@/domain/repositories/user.repository'
 import { UUID } from '@/domain/shared'
@@ -34,7 +35,7 @@ export class TypeOrmUserRepository implements UserRepository {
   async create(user: Omit<User, 'id'>): Promise<User> {
     return await entityManager.save(UserAdapter, user)
   }
-  async update(partialUser: Partial<User>): Promise<User> {
+  async update(partialUser: RequiredField<Partial<User>, 'id'>): Promise<User> {
     const updateResult = await entityManager.update(
       UserAdapter,
       {

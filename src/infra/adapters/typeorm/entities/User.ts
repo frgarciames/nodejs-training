@@ -31,7 +31,7 @@ export class UserAdapter implements User {
   @Column()
   availability: string
 
-  @OneToOne(() => AuthAdapter, { cascade: true })
+  @OneToOne(() => AuthAdapter)
   @JoinColumn()
   auth: Auth
 

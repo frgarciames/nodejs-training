@@ -2,6 +2,7 @@ import { loadControllers, scopePerRequest } from 'awilix-express'
 import * as bodyParser from 'body-parser'
 import * as express from 'express'
 import * as compression from 'compression'
+import * as cors from 'cors'
 import { asClass, createContainer } from 'awilix'
 import { TypeOrmUserRepository } from '../typeorm/repositories/user.repository'
 import { TypeOrmAuthRepository } from '../typeorm/repositories/auth.repository'
@@ -12,7 +13,7 @@ export const initApi = async () => {
     userRepository: asClass(TypeOrmUserRepository).singleton(),
     authRepository: asClass(TypeOrmAuthRepository).singleton(),
   })
-
+  app.use(cors())
   app.use(compression())
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: true }))

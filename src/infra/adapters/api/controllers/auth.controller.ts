@@ -1,4 +1,4 @@
-import { Auth } from '@/domain/entities'
+import { Auth, Role } from '@/domain/entities'
 import { hashPassword } from '@/domain/helpers/bcrypt'
 import { AuthRepository } from '@/domain/repositories/auth.repository'
 import { UserRepository } from '@/domain/repositories/user.repository'
@@ -23,7 +23,7 @@ const controller = ({ authRepository, userRepository }: Args) => ({
     const authInDb = await authRepository.findByEmail(email)
     if (authInDb) return alreadyExistException(res, ['email', email])
     const passwordHashed = await hashPassword(password)
-    const userRole = new RoleAdapter()
+    const userRole: Role = new RoleAdapter()
     userRole.slug = 'user'
     const auth = await authRepository.create({
       email,
@@ -41,8 +41,7 @@ const controller = ({ authRepository, userRepository }: Args) => ({
       authInDb.password
     )
     if (!isValidPassword) return notFoundException(res, 'email')
-    const user = await userRepository.findByAuthId(authInDb.id)
-    const token = await signToken(user.id)
+    const token = await signToken(authInDb)
     res.header('token', token).json({
       token,
     })
