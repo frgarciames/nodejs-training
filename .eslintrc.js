@@ -5,11 +5,20 @@ module.exports = {
     node: true,
   },
   parser: '@typescript-eslint/parser',
+  settings: {
+    'import/resolver': {
+      typescript: {
+        project: ['tsconfig.json'],
+      },
+    },
+  },
   parserOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
+    project: 'tsconfig.json',
+    tsconfigRootDir: './',
   },
-  plugins: ['@typescript-eslint', 'jest'],
+  plugins: ['@typescript-eslint', 'jest', 'import'],
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/eslint-recommended',
@@ -17,5 +26,7 @@ module.exports = {
     'plugin:jest/recommended',
     'prettier',
   ],
-  rules: {},
+  rules: {
+    'import/no-unresolved': ['error'],
+  },
 }
