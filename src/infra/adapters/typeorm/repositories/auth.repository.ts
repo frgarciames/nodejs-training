@@ -1,4 +1,3 @@
-import * as bcrypt from 'bcrypt'
 import { Auth } from '@/domain/entities'
 import { AuthRepository } from '@/domain/repositories/auth.repository'
 import { entityManager } from '../data-source'
