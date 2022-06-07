@@ -3,17 +3,26 @@ version: '3.4'
 services:
   nodejstraining:
     image: nodejstraining
+    env_file:
+      - .env
     build:
       context: .
       dockerfile: ./Dockerfile
     environment:
       NODE_ENV: production
+      PORT: 3000
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     ports:
       - 3000:3000
   postgres:
     image: postgres
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready']
+      interval: 10s
+      timeout: 5s
+      retries: 5
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
